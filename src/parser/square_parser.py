@@ -17,6 +17,7 @@ from src.dataclasses.payment import Payment
 from src.dataclasses.card_details import CardDetails
 from src.dataclasses.cash_details import CashDetails
 from src.dataclasses.item_loc_mapping import ItemLocMapping
+import uuid
 
 import re
 
@@ -280,7 +281,7 @@ class SquareParser:
                 total_money = line_item.get('total_money', {})
                 
                 order_details.append(OrderDetail(
-                    id=line_item.get('uid', ''),
+                    id=str(uuid.uuid4()),
                     order_id=order_id,
                     itemvar_id=line_item.get('catalog_object_id', ''),
                     qty=int(line_item.get('quantity', 0)),
@@ -402,7 +403,7 @@ if __name__ == '__main__':
     data = parser.parse_all()
     
     # Print summary
-    print("Square Data Parsed:")
+    print("\nSquare Data Parsed:")
     print(f"  Categories: {len(data['categories'])}")
     print(f"  Items: {len(data['items'])}")
     print(f"  Item Variations: {len(data['item_variations'])}")
