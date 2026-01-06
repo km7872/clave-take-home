@@ -1,4 +1,5 @@
 from src.parser.square_parser import SquareParser
+from src.parser.doordash_parser import DoorDashParser
 from src.db.insert import (
     insert_locations, insert_addresses, insert_categories, insert_items,
     insert_item_variations, insert_item_location_mapping, insert_orders,
@@ -9,15 +10,23 @@ from src.db.get_data import get_data
 from src.db.transaction import begin_transaction, commit_transaction, rollback_transaction
 
 if __name__ == '__main__':
-    # Example usage
-    parser = SquareParser(
-        catalog_path='data/sources/square/catalog.json',
-        orders_path='data/sources/square/orders.json',
-        payments_path='data/sources/square/payments.json',
-        locations_path='data/sources/square/locations.json'
-    )
-    
-    # Parse all data
+    # Toggle this flag to switch between Square and DoorDash loading
+    LOAD_SQUARE = False
+
+    if LOAD_SQUARE:
+        parser = SquareParser(
+            catalog_path='data/sources/square/catalog.json',
+            orders_path='data/sources/square/orders.json',
+            payments_path='data/sources/square/payments.json',
+            locations_path='data/sources/square/locations.json'
+        )
+    else:
+        # DoorDash uses a single combined JSON file
+        parser = DoorDashParser(
+            orders_path='data/sources/doordash_orders.json'
+        )
+
+    # Parse all data (Square or DoorDash, depending on parser)
     data = parser.parse_all()
     
     # Begin transaction

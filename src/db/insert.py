@@ -246,7 +246,7 @@ def insert_payments(payments: List[Payment]) -> tuple:
 def insert_card_details(card_details: List[CardDetails]) -> tuple:
     """Insert card details into Supabase card_details table."""
     if not card_details:
-        return {"error": "No card details to insert"}, 400
+        return {"error": "No card details to insert"}, 200
     
     details_data = []
     for detail in card_details:
@@ -266,7 +266,7 @@ def insert_card_details(card_details: List[CardDetails]) -> tuple:
 def insert_cash_details(cash_details: List[CashDetails]) -> tuple:
     """Insert cash details into Supabase cash_details table."""
     if not cash_details:
-        return {"error": "No cash details to insert"}, 400
+        return {"error": "No cash details to insert"}, 200
     
     details_data = []
     for detail in cash_details:
