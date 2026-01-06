@@ -4,7 +4,7 @@ Uses OpenAI GPT to suggest cleaned display names.
 """
 import os
 import json
-from typing import List, Optional
+from typing import List, Optional, Dict
 from dotenv import load_dotenv
 from openai import OpenAI
 
