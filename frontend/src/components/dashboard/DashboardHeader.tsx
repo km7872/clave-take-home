@@ -32,10 +32,10 @@ export function DashboardHeader() {
             Chat
           </Button>
 
-          <Button variant="outline" size="lg" className="flex items-center">
+          {/* <Button variant="outline" size="lg" className="flex items-center">
             <Upload className="h-5 w-5 mr-2" />
             Import Data
-          </Button>
+          </Button> */}
         </div>
       </header>
       
