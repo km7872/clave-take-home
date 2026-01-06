@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import { Loader2 } from "lucide-react";
 import { useDateRange } from "@/contexts/DateRangeContext";
+import { getApiUrl } from "@/config/api";
 
 export function TopSellingChart() {
   const { dateRange } = useDateRange();
@@ -19,7 +20,7 @@ export function TopSellingChart() {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      const url = new URL('http://localhost:8001/api/products/top-selling');
+      const url = new URL(getApiUrl('/api/products/top-selling'));
       url.searchParams.append('start_date', dateRange.startDate);
       url.searchParams.append('end_date', dateRange.endDate);
       url.searchParams.append('limit', '5');

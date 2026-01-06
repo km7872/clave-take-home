@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import { Loader2 } from "lucide-react";
 import { useDateRange } from "@/contexts/DateRangeContext";
+import { getApiUrl } from "@/config/api";
 
 export function RevenueByLocationChart() {
   const { dateRange } = useDateRange();
@@ -19,7 +20,7 @@ export function RevenueByLocationChart() {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      const url = new URL('http://localhost:8001/api/metrics/revenue-by-location');
+      const url = new URL(getApiUrl('/api/metrics/revenue-by-location'));
       url.searchParams.append('start_date', dateRange.startDate);
       url.searchParams.append('end_date', dateRange.endDate);
 

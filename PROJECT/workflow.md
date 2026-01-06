@@ -278,7 +278,7 @@ From project root:
 3. **Run API**
 
    ```bash
-   python run_api.py
+   uvicorn src.api.main:app --reload --port 8001
    ```
 
 4. **Run frontend**

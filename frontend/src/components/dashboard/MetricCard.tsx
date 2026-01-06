@@ -3,6 +3,7 @@ import { MessageCircle, TrendingUp, TrendingDown, Minus, Loader2 } from "lucide-
 import { Button } from "@/components/ui/button";
 import { ChatInsightsDialog } from "./ChatInsightsDialog";
 import { useDateRange } from "@/contexts/DateRangeContext";
+import { getApiUrl } from "@/config/api";
 
 interface MetricCardProps {
   title: string;
@@ -42,7 +43,7 @@ export function MetricCard({
     if (apiEndpoint && startDate && endDate) {
       const fetchData = async () => {
         setIsLoading(true);
-        const url = new URL(`http://localhost:8001${apiEndpoint}`);
+        const url = new URL(getApiUrl(apiEndpoint));
         url.searchParams.append('start_date', startDate);
         url.searchParams.append('end_date', endDate);
         

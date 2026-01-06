@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { Loader2 } from "lucide-react";
 import { useDateRange } from "@/contexts/DateRangeContext";
+import { getApiUrl } from "@/config/api";
 
 const COLORS = [
   "hsl(var(--chart-3))",
@@ -24,7 +25,7 @@ export function FulfillmentChart() {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      const url = new URL('http://localhost:8001/api/orders/fulfillment-breakdown');
+      const url = new URL(getApiUrl('/api/orders/fulfillment-breakdown'));
       url.searchParams.append('start_date', dateRange.startDate);
       url.searchParams.append('end_date', dateRange.endDate);
 

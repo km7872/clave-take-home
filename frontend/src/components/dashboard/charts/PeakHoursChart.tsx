@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import { Loader2 } from "lucide-react";
 import { useDateRange } from "@/contexts/DateRangeContext";
+import { getApiUrl } from "@/config/api";
 
 const formatHour = (hour: number): string => {
   if (hour === 0) return "12am";
@@ -26,7 +27,7 @@ export function PeakHoursChart() {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      const url = new URL('http://localhost:8001/api/time/peak-hours');
+      const url = new URL(getApiUrl('/api/time/peak-hours'));
       url.searchParams.append('start_date', dateRange.startDate);
       url.searchParams.append('end_date', dateRange.endDate);
 

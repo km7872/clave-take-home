@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { QueryVisualization } from "./QueryVisualization";
+import { getApiUrl } from "@/config/api";
 
 interface ChatInsightsDialogProps {
   open: boolean;
@@ -63,9 +64,7 @@ export function ChatInsightsDialog({
     setIsLoading(true);
 
     try {
-      // Use same port as other API calls - port 8001 based on chart components
-      const apiBaseUrl = "http://127.0.0.1:8001";
-      const response = await fetch(`${apiBaseUrl}/api/nlp-query`, {
+      const response = await fetch(getApiUrl('/api/nlp-query'), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import { Loader2 } from "lucide-react";
 import { useDateRange } from "@/contexts/DateRangeContext";
+import { getApiUrl } from "@/config/api";
 
 export function RevenueTrendChart() {
   const { dateRange } = useDateRange();
@@ -19,7 +20,7 @@ export function RevenueTrendChart() {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      const url = new URL('http://localhost:8001/api/metrics/revenue-trend');
+      const url = new URL(getApiUrl('/api/metrics/revenue-trend'));
       url.searchParams.append('start_date', dateRange.startDate);
       url.searchParams.append('end_date', dateRange.endDate);
       url.searchParams.append('granularity', 'day');
