@@ -2,6 +2,7 @@ import { ReactNode, useState, useEffect } from "react";
 import { MessageCircle, TrendingUp, TrendingDown, Minus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChatInsightsDialog } from "./ChatInsightsDialog";
+import { useDateRange } from "@/contexts/DateRangeContext";
 
 interface MetricCardProps {
   title: string;
@@ -25,12 +26,17 @@ export function MetricCard({
   insights,
   delay = 0,
   apiEndpoint,
-  startDate,
-  endDate
+  startDate: startDateProp,
+  endDate: endDateProp
 }: MetricCardProps) {
+  const { dateRange } = useDateRange();
   const [chatOpen, setChatOpen] = useState(false);
   const [value, setValue] = useState<string>(valueProp || "");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Use prop dates if provided, otherwise use context dates
+  const startDate = startDateProp || dateRange.startDate;
+  const endDate = endDateProp || dateRange.endDate;
 
   useEffect(() => {
     if (apiEndpoint && startDate && endDate) {
@@ -85,7 +91,7 @@ export function MetricCard({
     } else if (valueProp) {
       setValue(valueProp);
     }
-  }, [apiEndpoint, startDate, endDate, valueProp]);
+  }, [apiEndpoint, startDate, endDate, valueProp, dateRange]);
 
   const getTrendIcon = () => {
     if (change === undefined) return null;

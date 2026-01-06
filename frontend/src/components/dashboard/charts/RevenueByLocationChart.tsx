@@ -9,8 +9,10 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Loader2 } from "lucide-react";
+import { useDateRange } from "@/contexts/DateRangeContext";
 
 export function RevenueByLocationChart() {
+  const { dateRange } = useDateRange();
   const [data, setData] = useState<Array<{ location: string; revenue: number }>>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -18,13 +20,13 @@ export function RevenueByLocationChart() {
     const fetchData = async () => {
       setIsLoading(true);
       const url = new URL('http://localhost:8001/api/metrics/revenue-by-location');
-      url.searchParams.append('start_date', '2025-01-01T00:00:00Z');
-      url.searchParams.append('end_date', '2025-01-04T23:59:59Z');
+      url.searchParams.append('start_date', dateRange.startDate);
+      url.searchParams.append('end_date', dateRange.endDate);
 
       console.log('Fetching revenue by location data:', {
         endpoint: '/api/metrics/revenue-by-location',
-        startDate: '2025-01-01T00:00:00Z',
-        endDate: '2025-01-04T23:59:59Z',
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
         url: url.toString()
       });
 
@@ -51,7 +53,7 @@ export function RevenueByLocationChart() {
     };
 
     fetchData();
-  }, []);
+  }, [dateRange]);
 
   if (isLoading) {
     return (

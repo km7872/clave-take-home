@@ -8,12 +8,14 @@ import { TopSellingChart } from "@/components/dashboard/charts/TopSellingChart";
 import { PaymentMethodsChart } from "@/components/dashboard/charts/PaymentMethodsChart";
 import { FulfillmentChart } from "@/components/dashboard/charts/FulfillmentChart";
 import { PeakHoursChart } from "@/components/dashboard/charts/PeakHoursChart";
+import { DateRangeProvider } from "@/contexts/DateRangeContext";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto">
-        <DashboardHeader />
+    <DateRangeProvider>
+      <div className="min-h-screen bg-background p-6 lg:p-8">
+        <div className="max-w-7xl mx-auto">
+          <DashboardHeader />
 
         {/* Metric Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -28,8 +30,6 @@ const Index = () => {
             ]}
             delay={100}
             apiEndpoint="/api/metrics/revenue"
-            startDate="2025-01-01T00:00:00Z"
-            endDate="2025-01-04T23:59:59Z"
           />
           <MetricCard
             title="Total Tips"
@@ -42,8 +42,6 @@ const Index = () => {
             ]}
             delay={200}
             apiEndpoint="/api/payments/tips-analysis"
-            startDate="2025-01-01T00:00:00Z"
-            endDate="2025-01-04T23:59:59Z"
           />
           <MetricCard
             title="Avg Order Value"
@@ -56,8 +54,6 @@ const Index = () => {
             ]}
             delay={300}
             apiEndpoint="/api/orders/average-order-value"
-            startDate="2025-01-01T00:00:00Z"
-            endDate="2025-01-04T23:59:59Z"
           />
         </div>
 
@@ -148,8 +144,9 @@ const Index = () => {
             <FulfillmentChart />
           </ChartCard>
         </div>
+        </div>
       </div>
-    </div>
+    </DateRangeProvider>
   );
 };
 

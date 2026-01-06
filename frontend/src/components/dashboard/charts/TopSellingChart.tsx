@@ -9,8 +9,10 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Loader2 } from "lucide-react";
+import { useDateRange } from "@/contexts/DateRangeContext";
 
 export function TopSellingChart() {
+  const { dateRange } = useDateRange();
   const [data, setData] = useState<Array<{ product: string; sales: number }>>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -18,15 +20,15 @@ export function TopSellingChart() {
     const fetchData = async () => {
       setIsLoading(true);
       const url = new URL('http://localhost:8001/api/products/top-selling');
-      url.searchParams.append('start_date', '2025-01-01T00:00:00Z');
-      url.searchParams.append('end_date', '2025-01-04T23:59:59Z');
+      url.searchParams.append('start_date', dateRange.startDate);
+      url.searchParams.append('end_date', dateRange.endDate);
       url.searchParams.append('limit', '5');
       url.searchParams.append('metric', 'quantity');
 
       console.log('Fetching top selling products data:', {
         endpoint: '/api/products/top-selling',
-        startDate: '2025-01-01T00:00:00Z',
-        endDate: '2025-01-04T23:59:59Z',
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
         url: url.toString()
       });
 
@@ -53,7 +55,7 @@ export function TopSellingChart() {
     };
 
     fetchData();
-  }, []);
+  }, [dateRange]);
 
   if (isLoading) {
     return (

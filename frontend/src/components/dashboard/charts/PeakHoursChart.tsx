@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Loader2 } from "lucide-react";
+import { useDateRange } from "@/contexts/DateRangeContext";
 
 const formatHour = (hour: number): string => {
   if (hour === 0) return "12am";
@@ -18,6 +19,7 @@ const formatHour = (hour: number): string => {
 };
 
 export function PeakHoursChart() {
+  const { dateRange } = useDateRange();
   const [data, setData] = useState<Array<{ hour: string; orders: number }>>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -25,13 +27,13 @@ export function PeakHoursChart() {
     const fetchData = async () => {
       setIsLoading(true);
       const url = new URL('http://localhost:8001/api/time/peak-hours');
-      url.searchParams.append('start_date', '2025-01-01T00:00:00Z');
-      url.searchParams.append('end_date', '2025-01-04T23:59:59Z');
+      url.searchParams.append('start_date', dateRange.startDate);
+      url.searchParams.append('end_date', dateRange.endDate);
 
       console.log('Fetching peak hours data:', {
         endpoint: '/api/time-analysis/peak-hours',
-        startDate: '2025-01-01T00:00:00Z',
-        endDate: '2025-01-04T23:59:59Z',
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
         url: url.toString()
       });
 
@@ -65,7 +67,7 @@ export function PeakHoursChart() {
     };
 
     fetchData();
-  }, []);
+  }, [dateRange]);
 
   if (isLoading) {
     return (

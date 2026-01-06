@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Utensils, Bell, Settings, Upload, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChatInsightsDialog } from "./ChatInsightsDialog";
+import { DateRangeSelector } from "./DateRangeSelector";
 
 export function DashboardHeader() {
   const [chatOpen, setChatOpen] = useState(false);
@@ -20,6 +21,7 @@ export function DashboardHeader() {
         </div>
         
         <div className="flex items-center gap-2">
+          <DateRangeSelector />
           <Button 
             variant="outline" 
             size="lg" 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { Loader2 } from "lucide-react";
+import { useDateRange } from "@/contexts/DateRangeContext";
 
 const COLORS = [
   "hsl(var(--primary))",
@@ -17,6 +18,7 @@ const formatMethodName = (method: string): string => {
 };
 
 export function PaymentMethodsChart() {
+  const { dateRange } = useDateRange();
   const [data, setData] = useState<Array<{ name: string; value: number }>>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -24,13 +26,13 @@ export function PaymentMethodsChart() {
     const fetchData = async () => {
       setIsLoading(true);
       const url = new URL('http://localhost:8001/api/payments/method-breakdown');
-      url.searchParams.append('start_date', '2025-01-01T00:00:00Z');
-      url.searchParams.append('end_date', '2025-01-04T23:59:59Z');
+      url.searchParams.append('start_date', dateRange.startDate);
+      url.searchParams.append('end_date', dateRange.endDate);
 
       console.log('Fetching payment methods data:', {
         endpoint: '/api/payments/method-breakdown',
-        startDate: '2025-01-01T00:00:00Z',
-        endDate: '2025-01-04T23:59:59Z',
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
         url: url.toString()
       });
 
@@ -57,7 +59,7 @@ export function PaymentMethodsChart() {
     };
 
     fetchData();
-  }, []);
+  }, [dateRange]);
 
   if (isLoading) {
     return (
