@@ -11,7 +11,7 @@ class APIExecutor:
     Executes API calls and transforms responses to match query interface format.
     """
     
-    def __init__(self, model: str = "gpt-3.5-turbo", temperature: float = 0):
+    def __init__(self, model: str = "gpt-4o-mini", temperature: float = 0):
         """
         Initialize the API executor.
         

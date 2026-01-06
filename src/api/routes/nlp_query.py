@@ -15,7 +15,7 @@ query_interface = NaturalLanguageQuery()
 class QueryRequest(BaseModel):
     """Request model for NLP query."""
     query: str
-    model: Optional[str] = "gpt-3.5-turbo"
+    model: Optional[str] = "gpt-4o-mini"
     temperature: Optional[float] = 0.0
 
 
@@ -45,7 +45,7 @@ async def process_nlp_query(request: QueryRequest):
     """
     try:
         # Use global query interface (or create new one if model params differ)
-        if request.model != "gpt-3.5-turbo" or request.temperature != 0.0:
+        if request.model != "gpt-4o-mini" or request.temperature != 0.0:
             # Create new instance if different model/temperature requested
             q_interface = NaturalLanguageQuery(model=request.model, temperature=request.temperature)
         else:

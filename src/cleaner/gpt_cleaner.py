@@ -14,7 +14,7 @@ load_dotenv()
 class GPTCleaner:
     """Uses GPT to clean and standardize names."""
     
-    def __init__(self, model: str = "gpt-3.5-turbo", temperature: float = 0):
+    def __init__(self, model: str = "gpt-4o-mini", temperature: float = 0):
         """
         Initialize GPT cleaner.
         

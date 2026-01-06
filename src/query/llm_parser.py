@@ -17,12 +17,12 @@ class LLMQueryParser:
     Parses natural language queries into structured JSON query objects using GPT.
     """
     
-    def __init__(self, model: str = "gpt-3.5-turbo", temperature: float = 0):
+    def __init__(self, model: str = "gpt-4o-mini", temperature: float = 0):
         """
         Initialize the LLM parser.
         
         Args:
-            model: OpenAI model to use (default: gpt-3.5-turbo)
+            model: OpenAI model to use (default: gpt-4o-mini)
             temperature: Model temperature (0 = deterministic, higher = creative)
         """
         api_key = os.getenv("OPENAI_API_KEY")
