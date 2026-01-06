@@ -17,7 +17,7 @@ class LLMQueryParser:
     Parses natural language queries into structured JSON query objects using GPT.
     """
     
-    def __init__(self, model: str = "gpt-4o-mini", temperature: float = 0):
+    def __init__(self, model: str = "gpt-3.5-turbo", temperature: float = 0):
         """
         Initialize the LLM parser.
         

@@ -15,7 +15,7 @@ class DataFormatter:
     Uses LLM to format and filter API response data based on user query.
     """
     
-    def __init__(self, model: str = "gpt-4o-mini", temperature: float = 0):
+    def __init__(self, model: str = "gpt-3.5-turbo", temperature: float = 0):
         """
         Initialize the data formatter.
         

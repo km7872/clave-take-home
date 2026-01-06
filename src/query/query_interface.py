@@ -14,7 +14,7 @@ class NaturalLanguageQuery:
     Main interface for natural language query processing.
     """
     
-    def __init__(self, model: str = "gpt-4o-mini", temperature: float = 0):
+    def __init__(self, model: str = "gpt-3.5-turbo", temperature: float = 0):
         """
         Initialize the natural language query interface.
         

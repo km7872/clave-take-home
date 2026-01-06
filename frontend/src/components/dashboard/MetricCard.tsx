@@ -111,7 +111,7 @@ export function MetricCard({
           <div className="p-2 rounded-lg bg-primary/10 text-primary">
             {icon}
           </div>
-          <Button
+          {/* <Button
             variant="ghost"
             size="sm"
             onClick={() => setChatOpen(true)}
@@ -119,7 +119,7 @@ export function MetricCard({
           >
             <MessageCircle className="h-4 w-4 mr-1" />
             Chat
-          </Button>
+          </Button> */}
         </div>
         
         <p className="text-sm text-muted-foreground mb-1">{title}</p>
@@ -133,12 +133,12 @@ export function MetricCard({
         )}
       </div>
 
-      <ChatInsightsDialog
+      {/* <ChatInsightsDialog
         open={chatOpen}
         onOpenChange={setChatOpen}
         title={title}
         insights={insights}
-      />
+      /> */}
     </>
   );
 }

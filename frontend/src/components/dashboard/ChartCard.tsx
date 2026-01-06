@@ -22,7 +22,7 @@ export function ChartCard({ title, children, insights, delay = 0, className = ""
       >
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-display font-semibold text-foreground">{title}</h3>
-          <Button
+          {/* <Button
             variant="ghost"
             size="sm"
             onClick={() => setChatOpen(true)}
@@ -30,17 +30,17 @@ export function ChartCard({ title, children, insights, delay = 0, className = ""
           >
             <MessageCircle className="h-4 w-4 mr-1" />
             Chat
-          </Button>
+          </Button> */}
         </div>
         <div className="chart-container">{children}</div>
       </div>
 
-      <ChatInsightsDialog
+      {/* <ChatInsightsDialog
         open={chatOpen}
         onOpenChange={setChatOpen}
         title={title}
         insights={insights}
-      />
+      /> */}
     </>
   );
 }
