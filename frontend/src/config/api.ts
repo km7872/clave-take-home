@@ -1,6 +1,7 @@
 // API configuration with environment variable support
 // Uses VITE_API_BASE_URL from environment, defaults to localhost:8001 for development
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8001';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+console.log("API Base URL:", API_BASE_URL);
 
 /**
  * Get a full API URL for an endpoint

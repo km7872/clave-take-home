@@ -12,11 +12,12 @@ export function DashboardHeader() {
       <header className="flex items-center justify-between mb-8 opacity-0 animate-fade-in" style={{ animationFillMode: 'forwards' }}>
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-xl bg-primary/20 text-primary">
-            <Utensils className="h-6 w-6" />
+           {/* # add favicon here */}
+           <img src="/favicon.ico" alt="CLAVE" className="h-6 w-6" />
           </div>
           <div>
-            <h1 className="text-2xl font-display font-bold text-foreground">Bridger Inc</h1>
-            <p className="text-sm text-muted-foreground">Real-time analytics for restaurants</p>
+            <h1 className="text-2xl font-display font-bold text-foreground">CLAVE</h1>
+            <p className="text-sm text-muted-foreground">Real-time analytics for QSR Franchises</p>
           </div>
         </div>
         
@@ -32,10 +33,10 @@ export function DashboardHeader() {
             Chat
           </Button>
 
-          {/* <Button variant="outline" size="lg" className="flex items-center">
+          <Button variant="outline" size="lg" className="flex items-center">
             <Upload className="h-5 w-5 mr-2" />
             Import Data
-          </Button> */}
+          </Button>
         </div>
       </header>
       

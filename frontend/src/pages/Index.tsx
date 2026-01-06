@@ -1,6 +1,6 @@
 import { DollarSign, TrendingUp, ShoppingBag } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
-import { MetricCard } from "@/components/dashboard/MetricCard";
+import { MetricCard, ConfigurableField } from "@/components/dashboard/MetricCard";
 import { ChartCard } from "@/components/dashboard/ChartCard";
 import { RevenueTrendChart } from "@/components/dashboard/charts/RevenueTrendChart";
 import { RevenueByLocationChart } from "@/components/dashboard/charts/RevenueByLocationChart";
@@ -11,6 +11,15 @@ import { PeakHoursChart } from "@/components/dashboard/charts/PeakHoursChart";
 import { DateRangeProvider } from "@/contexts/DateRangeContext";
 
 const Index = () => {
+  const tipsConfigurableFields: ConfigurableField[] = [
+    { key: "total_tips", label: "Total Tips", format: "currency" },
+    { key: "total_amount", label: "Total Amount", format: "currency" },
+    { key: "tip_percentage", label: "Tip Percentage", format: "percentage" },
+    { key: "average_tip", label: "Average Tip", format: "currency" },
+    { key: "tipped_payments", label: "Tipped Payments", format: "number" },
+    { key: "total_payments", label: "Total Payments", format: "number" },
+  ];
+
   return (
     <DateRangeProvider>
       <div className="min-h-screen bg-background p-6 lg:p-8">
@@ -42,6 +51,7 @@ const Index = () => {
             ]}
             delay={200}
             apiEndpoint="/api/payments/tips-analysis"
+            configurableFields={tipsConfigurableFields}
           />
           <MetricCard
             title="Avg Order Value"
