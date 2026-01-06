@@ -114,8 +114,21 @@ QUERY FORMAT (return JSON in this exact structure):
     }},
     "group_by": ["column1", "column2"],
     "order_by": {{"column": "column_name", "direction": "asc|desc"}},
-    "limit": null or number
+    "limit": null or number,
+    "visualization": {{
+        "type": "bar_chart|line_chart|pie_chart|table|metric_card|text",
+        "x_axis": "column_name or null",
+        "y_axis": "column_name or null"
+    }}
 }}
+
+VISUALIZATION TYPE RULES:
+- bar_chart: Comparisons, rankings, categories (e.g., revenue by location, top products)
+- line_chart: Trends over time (e.g., revenue over time, hourly patterns)
+- pie_chart: Part-to-whole relationships (e.g., payment methods, fulfillment types)
+- table: Detailed data, multiple columns, lists
+- metric_card: Single number/value (e.g., total revenue, average order value)
+- text: Simple questions that need text response
 
 EXAMPLES:
 
@@ -145,7 +158,12 @@ Response:
   }},
   "group_by": ["locations.id", "locations.name"],
   "order_by": null,
-  "limit": null
+  "limit": null,
+  "visualization": {{
+    "type": "bar_chart",
+    "x_axis": "locations.name",
+    "y_axis": "total_sales"
+  }}
 }}
 
 User Query: "What were my top 5 selling products?"
@@ -172,7 +190,12 @@ Response:
     "column": "gross",
     "direction": "desc"
   }},
-  "limit": 5
+  "limit": 5,
+  "visualization": {{
+    "type": "bar_chart",
+    "x_axis": "item_variations.name",
+    "y_axis": "gross"
+  }}
 }}
 
 Now convert this query:

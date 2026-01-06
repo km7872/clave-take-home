@@ -10,8 +10,8 @@ def main():
     
     test_queries = [
         # "Show me all locations",
-        # "Show me sales comparison between Downtown and Airport locations",
-        "What were my top 5 selling products?",
+        "Show me revenue of Downtown and Airport locations",
+        # "What were my top 5 selling products?",
     ]
     
     for query in test_queries:

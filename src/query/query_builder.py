@@ -123,10 +123,14 @@ class QueryBuilder:
             if "limit" in structured_query and structured_query["limit"] and len(data) > structured_query["limit"]:
                 data = data[:structured_query["limit"]]
             
+            # Determine visualization metadata if not provided
+            metadata = self._determine_visualization(structured_query, data)
+            
             return {
                 "success": True,
                 "data": data,
-                "count": len(data)
+                "count": len(data),
+                "metadata": metadata
             }
         except Exception as e:
             import traceback
@@ -381,4 +385,97 @@ class QueryBuilder:
             # Add more operators as needed
         
         return query
+    
+    def _determine_visualization(self, structured_query: Dict, data: List[Dict]) -> Dict[str, Any]:
+        """
+        Determine visualization type based on query structure and data.
+        
+        Args:
+            structured_query: Structured query dictionary
+            data: Query result data
+            
+        Returns:
+            Metadata dictionary with visualization info
+        """
+        # Check if visualization is already specified in structured_query
+        if "visualization" in structured_query and structured_query["visualization"]:
+            viz = structured_query["visualization"]
+            return {
+                "suggested_visualization": viz.get("type", "table"),
+                "x_axis": viz.get("x_axis"),
+                "y_axis": viz.get("y_axis")
+            }
+        
+        # Determine visualization based on query structure
+        intent = structured_query.get("intent", "").lower()
+        group_by = structured_query.get("group_by", [])
+        aggregations = structured_query.get("aggregations", [])
+        has_time_filter = False
+        
+        # Check for time-based queries
+        filters = structured_query.get("filters") or {}
+        for col in filters.keys():
+            if "created_at" in col.lower() or "date" in col.lower():
+                has_time_filter = True
+                break
+        
+        # Check group_by for time columns
+        for col in group_by:
+            if "created_at" in col.lower() or "date" in col.lower() or "hour" in col.lower():
+                has_time_filter = True
+                break
+        
+        # Visualization logic
+        if has_time_filter or "trend" in intent or "time" in intent:
+            viz_type = "line_chart"
+            x_axis = "period" if group_by else None
+        elif "comparison" in intent or "vs" in intent or len(group_by) > 0:
+            # If comparing categories/locations
+            if any("location" in col.lower() for col in group_by):
+                viz_type = "bar_chart"
+                x_axis = "location_name" if any("name" in col.lower() for col in group_by) else None
+            elif len(data) <= 10 and aggregations:
+                viz_type = "bar_chart"
+                x_axis = group_by[0].split(".")[-1] if group_by else None
+            else:
+                viz_type = "table"
+                x_axis = None
+        elif "top" in intent and structured_query.get("limit"):
+            viz_type = "bar_chart"
+            x_axis = group_by[0].split(".")[-1] if group_by else None
+        elif not aggregations and len(data) == 1:
+            # Single value/metric
+            viz_type = "metric_card"
+            x_axis = None
+        elif not aggregations and len(data) <= 5:
+            # Small dataset - could be pie chart or table
+            if any("type" in col.lower() or "method" in col.lower() or "category" in col.lower() 
+                   for col in (structured_query.get("select", []) + group_by)):
+                viz_type = "pie_chart"
+                x_axis = None
+            else:
+                viz_type = "table"
+                x_axis = None
+        else:
+            # Default to table for complex queries
+            viz_type = "table"
+            x_axis = None
+        
+        # Determine y_axis from select fields
+        y_axis = None
+        select_fields = structured_query.get("select", [])
+        for field in select_fields:
+            if "SUM(" in field.upper() or "COUNT(" in field.upper() or "AVG(" in field.upper():
+                # Extract alias or column name
+                if " AS " in field.upper():
+                    y_axis = field.upper().split(" AS ")[-1].strip()
+                else:
+                    y_axis = field.split("(")[1].split(")")[0].split(".")[-1]
+                break
+        
+        return {
+            "suggested_visualization": viz_type,
+            "x_axis": x_axis,
+            "y_axis": y_axis
+        }
 
