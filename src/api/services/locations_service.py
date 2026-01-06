@@ -238,3 +238,22 @@ def get_hourly_pattern(location_id: str, start_date: datetime, end_date: datetim
         }
     }
 
+def get_locations(id: str) -> Dict[str, Any]:
+    """
+    Get a location by id.
+    """
+
+    query = db.table("locations").select("id, name, address, timezone, status, type, merchant_id")
+    if id:
+        query = query.eq("id", id)
+    response = query.execute()
+    return response.data[0] if response.data else None
+
+def get_location_id(name: str) -> str:
+    """
+    Get a location id by name.
+    """
+    query = db.table("locations").select("id, name")
+    query = query.eq("name", name)
+    response = query.execute()
+    return response.data[0]["id"] if response.data else None
