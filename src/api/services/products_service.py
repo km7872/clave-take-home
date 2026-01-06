@@ -50,14 +50,14 @@ def get_top_selling_products(start_date: datetime, end_date: datetime, limit: in
     
     # Get order details with item variations
     query = db.table("order_details").select(
-        "gross_amount, qty, itemvar_id, order_id, item_variations(id, name, item_id, items(name))"
+        "gross_amount, qty, itemvar_id, order_id, item_variations(id, display_name, name, item_id, items(display_name, name))"
     )
     query = query.in_("order_id", list(valid_order_ids))
     
     response = query.execute()
     order_details = response.data if response.data else []
     
-    # Group by item variation
+    # Group by display_name (treats same display_name as one product)
     product_data = {}
     
     for detail in order_details:
@@ -74,20 +74,22 @@ def get_top_selling_products(start_date: datetime, end_date: datetime, limit: in
             continue
         
         item_id = item_variation.get("item_id")
-        variation_name = item_variation.get("name", "")
+        # Use display_name if available, fall back to name
+        variation_name = item_variation.get("display_name") or item_variation.get("name", "")
         
         # Get item name
         item_name = ""
         items = item_variation.get("items")
         if isinstance(items, list) and len(items) > 0:
-            item_name = items[0].get("name", "")
+            item_name = items[0].get("display_name") or items[0].get("name", "")
         elif isinstance(items, dict):
-            item_name = items.get("name", "")
+            item_name = items.get("display_name") or items.get("name", "")
         
-        if itemvar_id not in product_data:
-            product_data[itemvar_id] = {
-                "id": itemvar_id,
-                "item_id": item_id,
+        # Use display_name as the key (or fallback to name if display_name is empty)
+        product_key = variation_name if variation_name else f"unnamed_{itemvar_id}"
+        
+        if product_key not in product_data:
+            product_data[product_key] = {
                 "name": variation_name,
                 "item_name": item_name,
                 "revenue": 0,
@@ -97,8 +99,8 @@ def get_top_selling_products(start_date: datetime, end_date: datetime, limit: in
         gross_amount = float(detail.get("gross_amount", 0) or 0)
         qty = int(detail.get("qty", 0) or 0)
         
-        product_data[itemvar_id]["revenue"] += gross_amount
-        product_data[itemvar_id]["quantity"] += qty
+        product_data[product_key]["revenue"] += gross_amount
+        product_data[product_key]["quantity"] += qty
     
     # Convert to list and sort
     products = list(product_data.values())

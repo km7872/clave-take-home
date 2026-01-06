@@ -89,10 +89,32 @@ def process_items(gpt_cleaner: GPTCleaner, category_names: Dict[str, str]) -> Tu
         
         # Group similar names using fuzzy matching
         name_groups = group_similar_names(unique_names, threshold=75.0)
+
+        # Filter groups that have 2 or more items (need cleaning due to variations)
+        groups_needing_cleaning = [ng for ng in name_groups if len(ng) >= 2]
         
+        # Call GPT cleaner once for all groups that need cleaning
+        cleaned_names = []
+        if groups_needing_cleaning:
+            cleaned_names = gpt_cleaner.clean_item_names(groups_needing_cleaning, category_name)
+        
+        # Create a mapping from name_group (as sorted tuple for consistency) to cleaned_name
+        name_group_to_cleaned = {}
+        for i, name_group in enumerate(groups_needing_cleaning):
+            # Use sorted tuple to ensure consistent matching regardless of order
+            key = tuple(sorted(name_group))
+            name_group_to_cleaned[key] = cleaned_names[i]
+        
+        # Process all name groups (both cleaned and single-item groups)
         for name_group in name_groups:
-            # Use GPT to clean (works for single items too - standardizes capitalization, etc.)
-            cleaned_name = gpt_cleaner.clean_item_names(name_group, category_name)
+            # Use sorted tuple for consistent lookup
+            group_key = tuple(sorted(name_group))
+            if group_key in name_group_to_cleaned:
+                # Use GPT-cleaned name for groups with variations
+                cleaned_name = name_group_to_cleaned[group_key]
+            else:
+                # For single-item groups, use the name as-is
+                cleaned_name = name_group[0]
             
             # Create preview entry
             group_preview = {
@@ -109,6 +131,27 @@ def process_items(gpt_cleaner: GPTCleaner, category_names: Dict[str, str]) -> Tu
                         'id': item['id'],
                         'display_name': cleaned_name
                     })
+        
+        # for name_group in name_groups:
+        #     # Use GPT to clean (works for single items too - standardizes capitalization, etc.)
+        #     # cleaned_name = gpt_cleaner.clean_item_names(name_group, category_name)
+        #     print(name_group)
+            
+            # Create preview entry
+            # group_preview = {
+            #     'category': category_name,
+            #     'original_names': name_group,
+            #     'cleaned_name': cleaned_name
+            # }
+            # preview_data.append(group_preview)
+            
+            # # Create updates for all items with these names in this category
+            # for item in category_items:
+            #     if item['name'] in name_group:
+            #         updates.append({
+            #             'id': item['id'],
+            #             'display_name': cleaned_name
+            #         })
     
     return updates, preview_data
 
@@ -131,14 +174,30 @@ def process_variations(gpt_cleaner: GPTCleaner, item_names: Dict[str, str]) -> T
     updates = []
     preview_data = []
     
+    # Prepare all variation groups for batch processing
+    variation_groups = []
+    item_ids_order = []
+    
     for item_id, item_variations in variations_by_item.items():
         item_name = item_names.get(item_id, f"Item {item_id}")
-        
         # Get unique variation names for this item
         unique_names = list(set(var['name'] for var in item_variations))
         
-        # Use GPT to clean and standardize variation names
-        cleaned_mapping = gpt_cleaner.clean_variation_names(unique_names, item_name)
+        if unique_names:  # Only add if there are variation names
+            variation_groups.append((unique_names, item_name))
+            item_ids_order.append(item_id)
+    
+    # Call GPT cleaner once for all variation groups
+    cleaned_mappings = []
+    if variation_groups:
+        cleaned_mappings = gpt_cleaner.clean_variation_names(variation_groups)
+    
+    # Process results and create updates/previews
+    for i, item_id in enumerate(item_ids_order):
+        item_variations = variations_by_item[item_id]
+        item_name = item_names.get(item_id, f"Item {item_id}")
+        unique_names = list(set(var['name'] for var in item_variations))
+        cleaned_mapping = cleaned_mappings[i] if i < len(cleaned_mappings) else {}
         
         # Create preview entry
         group_preview = {

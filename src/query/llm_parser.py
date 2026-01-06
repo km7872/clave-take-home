@@ -98,7 +98,8 @@ IMPORTANT INSTRUCTIONS:
 3. For "sales" queries, clarify: if asking for revenue use "total_money", if asking for count use COUNT of orders
 4. Location names are: Downtown, Airport, Mall Location, University
 5. When joining tables, use the relationships specified in the schema
-6. Return ONLY valid JSON, no explanations
+6. For items and item_variations tables, ALWAYS use "display_name" instead of "name" when selecting, grouping by, or filtering by product names (this ensures products with the same display name are treated as one)
+7. Return ONLY valid JSON, no explanations
 
 QUERY FORMAT (return JSON in this exact structure):
 {{
@@ -172,8 +173,7 @@ Response:
   "intent": "top_products",
   "tables": ["item_variations", "order_details"],
   "select": [
-    "item_variations.id",
-    "item_variations.name",
+    "item_variations.display_name",
     "SUM(order_details.gross_amount) AS gross"
   ],
   "aggregations": ["SUM"],
@@ -185,7 +185,7 @@ Response:
     }}
   ],
   "filters": null,
-  "group_by": ["item_variations.id", "item_variations.name"],
+  "group_by": ["item_variations.display_name"],
   "order_by": {{
     "column": "gross",
     "direction": "desc"
@@ -193,7 +193,7 @@ Response:
   "limit": 5,
   "visualization": {{
     "type": "bar_chart",
-    "x_axis": "item_variations.name",
+    "x_axis": "item_variations.display_name",
     "y_axis": "gross"
   }}
 }}

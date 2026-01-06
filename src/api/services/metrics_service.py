@@ -64,10 +64,9 @@ def get_revenue_by_location(start_date: datetime, end_date: datetime) -> List[Di
     response = query.execute()
     orders = response.data if response.data else []
     
-    # Group by location
+    # Group by location name (not location_id)
     location_revenue = {}
     for order in orders:
-        location_id = order.get("location_id")
         location_name = None
         
         # Extract location name from nested structure
@@ -76,17 +75,19 @@ def get_revenue_by_location(start_date: datetime, end_date: datetime) -> List[Di
         elif "locations" in order and isinstance(order["locations"], dict):
             location_name = order["locations"].get("name")
         
-        if location_id not in location_revenue:
-            location_revenue[location_id] = {
-                "location_id": location_id,
-                "location_name": location_name or location_id,
+        # Use location_name as key (fallback to "Unknown" if missing)
+        location_key = location_name or "Unknown"
+        
+        if location_key not in location_revenue:
+            location_revenue[location_key] = {
+                "location_name": location_key,
                 "revenue": 0,
                 "order_count": 0
             }
         
         revenue = float(order.get("total_money", 0) or 0)
-        location_revenue[location_id]["revenue"] += revenue
-        location_revenue[location_id]["order_count"] += 1
+        location_revenue[location_key]["revenue"] += revenue
+        location_revenue[location_key]["order_count"] += 1
     
     # Calculate averages and format
     result = []
