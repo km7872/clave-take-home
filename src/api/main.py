@@ -3,7 +3,7 @@ FastAPI application for restaurant analytics dashboard.
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from src.api.routes import metrics, products, locations, orders, payments, time_analysis
+from src.api.routes import metrics, products, locations, orders, payments, time_analysis, nlp_query
 
 app = FastAPI(
     title="Restaurant Analytics API",
@@ -27,6 +27,7 @@ app.include_router(locations.router, prefix="/api/locations", tags=["Locations"]
 app.include_router(orders.router, prefix="/api/orders", tags=["Orders"])
 app.include_router(payments.router, prefix="/api/payments", tags=["Payments"])
 app.include_router(time_analysis.router, prefix="/api/time", tags=["Time Analysis"])
+app.include_router(nlp_query.router, prefix="/api", tags=["NLP Query"])
 
 
 @app.get("/")
