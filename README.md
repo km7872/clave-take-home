@@ -122,7 +122,8 @@ The system dynamically generates appropriate visualizations based on these queri
 - Backend API docs: `http://localhost:8001/docs` (FastAPI Swagger UI)
 - Frontend: Open `http://localhost:51808` in your browser
 - Verify set up by seeing dahsboard
-image.png
+
+![Screenshot](image.png)
 
 ---
 
