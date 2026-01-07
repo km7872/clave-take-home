@@ -2,7 +2,7 @@
 
 A natural language dashboard generator for restaurant analytics that consolidates data from multiple POS systems (Toast, DoorDash, Square) and transforms it into actionable insights powered by AI.
 
-![Architecture Pipeline](Pipeline.jpeg)
+![Architecture Pipeline](pipeline.jpeg)
 
 
 ## Table of Contents
