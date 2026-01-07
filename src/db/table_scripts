@@ -1,0 +1,155 @@
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
+
+CREATE TABLE public.addresses (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  location_id text,
+  address_line_1 text,
+  locality text,
+  administrative_district_level_1 text,
+  postal_code text,
+  country text,
+  created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT addresses_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_location FOREIGN KEY (location_id) REFERENCES public.locations(id)
+);
+CREATE TABLE public.card_details (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  payment_id text NOT NULL,
+  status text,
+  card_brand text,
+  last_4 character,
+  exp_month smallint,
+  exp_year smallint,
+  entry_method text,
+  created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT card_details_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_card_payment FOREIGN KEY (payment_id) REFERENCES public.payments(id)
+);
+CREATE TABLE public.cash_details (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  payment_id text NOT NULL,
+  buyer_supplied_currency character NOT NULL,
+  change_back_currency character NOT NULL,
+  buyer_supplied_money numeric,
+  change_back_money numeric,
+  created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT cash_details_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_cash_payment FOREIGN KEY (payment_id) REFERENCES public.payments(id)
+);
+CREATE TABLE public.categories (
+  id text NOT NULL,
+  name text NOT NULL,
+  display_name text,
+  created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT categories_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.fulfillments (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  order_id text NOT NULL,
+  uid text,
+  type text,
+  state text,
+  created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT fulfillments_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_fulfillment_order FOREIGN KEY (order_id) REFERENCES public.orders(id)
+);
+CREATE TABLE public.item_location_mapping (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  item_id text NOT NULL,
+  location_id text NOT NULL,
+  created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT item_location_mapping_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_item_mapping FOREIGN KEY (item_id) REFERENCES public.items(id),
+  CONSTRAINT fk_location_mapping FOREIGN KEY (location_id) REFERENCES public.locations(id)
+);
+CREATE TABLE public.item_variations (
+  id text NOT NULL,
+  item_id text NOT NULL,
+  name text NOT NULL,
+  price numeric NOT NULL,
+  price_currency character NOT NULL,
+  display_name text,
+  created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT item_variations_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES public.items(id)
+);
+CREATE TABLE public.items (
+  id text NOT NULL,
+  name text NOT NULL,
+  description text,
+  display_name text,
+  category_id text,
+  created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT items_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_category FOREIGN KEY (category_id) REFERENCES public.categories(id)
+);
+CREATE TABLE public.locations (
+  id text NOT NULL,
+  name text NOT NULL,
+  timezone text,
+  status text,
+  type text,
+  merchant_id text,
+  created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT locations_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.order_details (
+  id uuid NOT NULL,
+  order_id text NOT NULL,
+  itemvar_id text NOT NULL,
+  qty integer NOT NULL,
+  gross_amount numeric NOT NULL,
+  gross_amount_currency character NOT NULL,
+  total_amount numeric NOT NULL,
+  total_amount_currency character NOT NULL,
+  created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT order_details_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES public.orders(id),
+  CONSTRAINT fk_item_variation FOREIGN KEY (itemvar_id) REFERENCES public.item_variations(id)
+);
+CREATE TABLE public.orders (
+  id text NOT NULL,
+  location_id text NOT NULL,
+  ref_id text,
+  source text,
+  created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now(),
+  closed_at timestamp with time zone,
+  tip_amount numeric,
+  tip_amount_currency character,
+  tax_amount numeric,
+  tax_currency character,
+  total_money numeric,
+  total_money_currency character,
+  CONSTRAINT orders_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_order_location FOREIGN KEY (location_id) REFERENCES public.locations(id)
+);
+CREATE TABLE public.payments (
+  id text NOT NULL,
+  order_id text NOT NULL,
+  location_id text NOT NULL,
+  amount numeric,
+  amount_currency character NOT NULL,
+  tip_amount numeric,
+  tip_amount_currency character,
+  total_money numeric,
+  total_money_currency character DEFAULT 'USD'::bpchar,
+  source_type text,
+  status text,
+  created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT payments_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_payment_order FOREIGN KEY (order_id) REFERENCES public.orders(id),
+  CONSTRAINT fk_payment_location FOREIGN KEY (location_id) REFERENCES public.locations(id)
+);
